@@ -1,0 +1,130 @@
+﻿<Page x:Class="Proyecto_Integradora.Views.ClienteInicioView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="clr-namespace:Proyecto_Integradora.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1000"
+      Title="ClienteInicioView"
+      FontFamily="Segoe UI">
+
+    <Page.DataContext>
+        <vm:ClienteInicioViewModel/>
+    </Page.DataContext>
+
+    <Page.Resources>
+        <!-- Mantenemos el nombre BotonNavCliente pero cambiamos el TargetType a RadioButton -->
+        <Style x:Key="BotonNavCliente" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#888888"/>
+            <Setter Property="Height" Value="55"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="CuerpoBoton" Background="{TemplateBinding Background}" Margin="0,2">
+                            <Grid>
+                                <Rectangle x:Name="BarraRoja" 
+                                           Fill="Red" 
+                                           Width="4" 
+                                           HorizontalAlignment="Left" 
+                                           Visibility="Hidden">
+                                    <Rectangle.Effect>
+                                        <DropShadowEffect Color="Red" BlurRadius="10" ShadowDepth="0"/>
+                                    </Rectangle.Effect>
+                                </Rectangle>
+
+                                <ContentPresenter VerticalAlignment="Center" Margin="30,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- HOVER: Al pasar el mouse -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="CuerpoBoton" Property="Background" Value="#151515"/>
+                            </Trigger>
+
+                            <!-- ESTÁTICO: Al estar seleccionado -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="BarraRoja" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="CuerpoBoton" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                            <GradientStop Color="#30FF0000" Offset="0"/>
+                                            <GradientStop Color="Transparent" Offset="0.6"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo simple para el botón de cerrar sesión (que no es RadioButton) -->
+        <Style x:Key="BotonAccionSimple" TargetType="Button" BasedOn="{StaticResource BotonNavCliente}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Margin="0,2">
+                            <ContentPresenter VerticalAlignment="Center" Margin="30,0,0,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- BARRA LATERAL -->
+        <Border Grid.Column="0" Background="#050505" BorderBrush="#111" BorderThickness="0,0,1,0">
+            <StackPanel>
+                <Image Source="pack://application:,,,/Core/fenix_logo.png" Height="100" Margin="0,40,0,40" Opacity="0.9"/>
+
+                <TextBlock Text="OPERACIONES" Foreground="#444" Margin="25,0,0,15" FontSize="10" FontWeight="Bold"/>
+
+                <!-- BOTONES DE NAVEGACIÓN (RadioButtons para el estado estático) -->
+                <RadioButton Content="SOLICITAR" 
+                             GroupName="MenuCliente"
+                             Style="{StaticResource BotonNavCliente}"
+                             Click="NavegarSolicitar_Click"/>
+
+                <RadioButton Content="PAGAR" 
+                             GroupName="MenuCliente"
+                             Style="{StaticResource BotonNavCliente}"
+                             Click="NavegarPagar_Click"/>
+
+                <RadioButton Content="CERRAR SESIÓN" 
+                        Command="{Binding RegresarCommand}"
+                        Style="{StaticResource BotonNavCliente}"
+                        Margin="0,20,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- PANEL DE CONTENIDO VARIABLE -->
+        <Grid Grid.Column="1" Background="#0A0A0A">
+            <!-- Frame donde se cargarán las vistas -->
+            <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden"/>
+
+            <!-- Contenido por defecto (Bienvenida) -->
+            <Grid x:Name="WelcomePanel">
+                <Image Source="pack://application:,,,/Core/fenix_logo.png" Opacity="0.18" Stretch="Uniform" Margin="150"/>
+                <StackPanel VerticalAlignment="Top" Margin="40">
+                    <TextBlock Text="Panel de Cliente" Foreground="White" FontSize="32" FontWeight="Thin"/>
+                    <TextBlock Text="Bienvenido. Seleccione una acción lateral." Foreground="#555" FontSize="14" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
