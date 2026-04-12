@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Proyecto_Integradora.Models;
 using Proyecto_Integradora.Core;
@@ -82,7 +83,31 @@ namespace Proyecto_Integradora.Services
                 SetJwtHeader();
                 var payload = new ResolverValeRequest { status = status };
                 var response = await _httpClient.PostAsJsonAsync($"http://localhost:5185/api/admin/vales/{valeId}/resolver", payload);
-                var body = await response.Content.ReadFromJsonAsync<ResolverValeResponse>();
+                var rawContent = await response.Content.ReadAsStringAsync();
+
+                if (string.IsNullOrWhiteSpace(rawContent))
+                {
+                    return new ResolverValeResponse
+                    {
+                        status = response.IsSuccessStatusCode,
+                        message = response.IsSuccessStatusCode
+                            ? "Vale resuelto correctamente."
+                            : $"No se pudo resolver el vale. HTTP {(int)response.StatusCode}."
+                    };
+                }
+
+                ResolverValeResponse body = null;
+                try
+                {
+                    body = JsonSerializer.Deserialize<ResolverValeResponse>(rawContent, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                }
+                catch
+                {
+                    // El backend respondio texto plano o HTML; usamos fallback sin romper la app.
+                }
 
                 if (body != null)
                 {
@@ -92,7 +117,7 @@ namespace Proyecto_Integradora.Services
                 return new ResolverValeResponse
                 {
                     status = response.IsSuccessStatusCode,
-                    message = response.IsSuccessStatusCode ? "Vale resuelto correctamente." : "No se pudo resolver el vale."
+                    message = response.IsSuccessStatusCode ? rawContent : $"No se pudo resolver el vale: {rawContent}"
                 };
             }
             catch (Exception ex)
