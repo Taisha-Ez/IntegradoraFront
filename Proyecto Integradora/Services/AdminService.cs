@@ -74,5 +74,35 @@ namespace Proyecto_Integradora.Services
                 return new List<Vale>();
             }
         }
+
+        public async Task<ResolverValeResponse> ResolverValeAsync(string valeId, string status)
+        {
+            try
+            {
+                SetJwtHeader();
+                var payload = new ResolverValeRequest { status = status };
+                var response = await _httpClient.PostAsJsonAsync($"http://localhost:5185/api/admin/vales/{valeId}/resolver", payload);
+                var body = await response.Content.ReadFromJsonAsync<ResolverValeResponse>();
+
+                if (body != null)
+                {
+                    return body;
+                }
+
+                return new ResolverValeResponse
+                {
+                    status = response.IsSuccessStatusCode,
+                    message = response.IsSuccessStatusCode ? "Vale resuelto correctamente." : "No se pudo resolver el vale."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResolverValeResponse
+                {
+                    status = false,
+                    message = ex.Message
+                };
+            }
+        }
     }
 }

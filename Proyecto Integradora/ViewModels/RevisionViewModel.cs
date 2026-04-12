@@ -12,6 +12,7 @@ namespace Proyecto_Integradora.ViewModels
     {
         private readonly AdminService _adminService = new AdminService();
         private ObservableCollection<Vale> _valesPendientes;
+        private Vale _valeSeleccionado;
 
         public ObservableCollection<Vale> ValesPendientes
         {
@@ -20,6 +21,16 @@ namespace Proyecto_Integradora.ViewModels
             {
                 _valesPendientes = value;
                 OnPropertyChanged(nameof(ValesPendientes));
+            }
+        }
+
+        public Vale ValeSeleccionado
+        {
+            get => _valeSeleccionado;
+            set
+            {
+                _valeSeleccionado = value;
+                OnPropertyChanged(nameof(ValeSeleccionado));
             }
         }
 
@@ -44,6 +55,44 @@ namespace Proyecto_Integradora.ViewModels
 
             // Si no hay pendientes, mostramos todo para evitar una tabla vacia.
             ValesPendientes = new ObservableCollection<Vale>(pendientes.Count > 0 ? pendientes : todos);
+
+            if (ValesPendientes.Count > 0)
+            {
+                ValeSeleccionado = ValesPendientes[0];
+            }
+            else
+            {
+                ValeSeleccionado = null;
+            }
+        }
+
+        public async Task<ResolverValeResponse> ResolverValeSeleccionadoAsync(string nuevoStatus)
+        {
+            if (ValeSeleccionado == null)
+            {
+                return new ResolverValeResponse
+                {
+                    status = false,
+                    message = "Selecciona un vale antes de resolverlo."
+                };
+            }
+
+            if (nuevoStatus != "Aceptado" && nuevoStatus != "Rechazado")
+            {
+                return new ResolverValeResponse
+                {
+                    status = false,
+                    message = "El estado solo puede ser Aceptado o Rechazado."
+                };
+            }
+
+            var resultado = await _adminService.ResolverValeAsync(ValeSeleccionado.id, nuevoStatus);
+            if (resultado.status)
+            {
+                await CargarPendientesAsync();
+            }
+
+            return resultado;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

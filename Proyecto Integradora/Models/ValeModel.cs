@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Proyecto_Integradora.Models
 {
@@ -27,5 +28,18 @@ namespace Proyecto_Integradora.Models
         public bool status { get; set; }
         public string message { get; set; }
         public List<Vale> data { get; set; }
+    }
+
+    public class ResolverValeRequest
+    {
+        [JsonPropertyName("status")]
+        public string status { get; set; }
+    }
+
+    public class ResolverValeResponse
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+        public object data { get; set; }
     }
 }

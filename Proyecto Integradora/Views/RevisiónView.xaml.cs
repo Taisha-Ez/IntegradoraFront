@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Proyecto_Integradora.ViewModels;
 
 namespace Proyecto_Integradora.Views
 {
@@ -23,6 +24,38 @@ namespace Proyecto_Integradora.Views
         public RevisiónView()
         {
             InitializeComponent();
+        }
+
+        private async void ResolverVale_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not RevisionViewModel vm)
+            {
+                return;
+            }
+
+            if (vm.ValeSeleccionado == null)
+            {
+                MessageBox.Show("Selecciona un vale en la tabla.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dialog = new ResolverValeDialog(vm.ValeSeleccionado.id)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            var confirmed = dialog.ShowDialog();
+            if (confirmed != true)
+            {
+                return;
+            }
+
+            var response = await vm.ResolverValeSeleccionadoAsync(dialog.EstadoSeleccionado);
+
+            MessageBox.Show(response.message,
+                response.status ? "Exito" : "Error",
+                MessageBoxButton.OK,
+                response.status ? MessageBoxImage.Information : MessageBoxImage.Error);
         }
     }
 }
