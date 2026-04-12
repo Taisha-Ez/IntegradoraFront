@@ -46,5 +46,18 @@ namespace Proyecto_Integradora.Services
                 return new List<Vale>();
             }
         }
+
+        public async Task<List<Vale>> GetAdminValesAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<ValesResponse>("http://localhost:5185/api/admin/vales");
+                return response?.status == true ? response.data : new List<Vale>();
+            }
+            catch (Exception)
+            {
+                return new List<Vale>();
+            }
+        }
     }
 }

@@ -33,13 +33,7 @@ namespace Proyecto_Integradora.ViewModels
 
         private async Task CargarPendientesAsync()
         {
-            var pendientes = await _adminService.GetValesListAsync("Pendiente");
-
-            // Fallback por variaciones de nombre de estado en API.
-            if (pendientes.Count == 0)
-            {
-                pendientes = await _adminService.GetValesListAsync("Pendientes");
-            }
+            var pendientes = await _adminService.GetAdminValesAsync();
 
             // Refuerzo: si la API responde mezcla de estados, mostramos solo pendientes.
             pendientes = pendientes
