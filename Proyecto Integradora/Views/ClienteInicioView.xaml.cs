@@ -13,15 +13,40 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 using Proyecto_Integradora.Views;
+using Proyecto_Integradora.Services;
 
 namespace Proyecto_Integradora.Views
 {
     public partial class ClienteInicioView : Page
 {
+    private readonly CustomerService _customerService = new CustomerService();
+
     public ClienteInicioView()
     {
         InitializeComponent();
+        Loaded += ClienteInicioView_Loaded;
+    }
+
+    private async void ClienteInicioView_Loaded(object sender, RoutedEventArgs e)
+    {
+        Loaded -= ClienteInicioView_Loaded;
+        await CargarVistaInicialClienteAsync();
+    }
+
+    private async Task CargarVistaInicialClienteAsync()
+    {
+        WelcomePanel.Visibility = Visibility.Collapsed;
+
+        var saldoCredito = await _customerService.ConsultarSaldoCreditoAsync();
+        if (saldoCredito.status && saldoCredito.data != null)
+        {
+            ContentFrame.Navigate(new SolicitarPagoView());
+            return;
+        }
+
+        ContentFrame.Navigate(new FormularioSolicitarValeView());
     }
 
     private void NavegarSolicitar_Click(object sender, RoutedEventArgs e)

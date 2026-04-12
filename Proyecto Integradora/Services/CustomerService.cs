@@ -100,6 +100,17 @@ namespace Proyecto_Integradora.Services
 
         public async Task<CreditoDisponibleResponse> ConsultarCreditoDisponibleAsync()
         {
+            var saldo = await ConsultarSaldoCreditoAsync();
+            if (saldo.status && saldo.data != null)
+            {
+                return new CreditoDisponibleResponse
+                {
+                    status = true,
+                    message = saldo.message,
+                    limiteCredito = saldo.data.saldoDisponible
+                };
+            }
+
             var endpoints = new[]
             {
                 $"{BaseUrl}/Customers/consultar-credito",
@@ -136,6 +147,63 @@ namespace Proyecto_Integradora.Services
                 status = false,
                 message = "No fue posible consultar el credito disponible para validar el monto."
             };
+        }
+
+        public async Task<SaldoCreditoResponse> ConsultarSaldoCreditoAsync()
+        {
+            try
+            {
+                SetJwtHeader();
+                var response = await _httpClient.GetFromJsonAsync<SaldoCreditoResponse>($"{BaseUrl}/Creditos/saldo");
+
+                if (response != null)
+                {
+                    return response;
+                }
+
+                return new SaldoCreditoResponse
+                {
+                    status = false,
+                    message = "No se recibio respuesta al consultar saldo de credito."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SaldoCreditoResponse
+                {
+                    status = false,
+                    message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SolicitudCreditoResponse> SolicitarCreditoAsync(SolicitudCreditoRequest solicitud)
+        {
+            try
+            {
+                SetJwtHeader();
+                var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/Creditos/solicitar", solicitud);
+                var body = await response.Content.ReadFromJsonAsync<SolicitudCreditoResponse>();
+
+                if (body != null)
+                {
+                    return body;
+                }
+
+                return new SolicitudCreditoResponse
+                {
+                    status = response.IsSuccessStatusCode,
+                    message = response.IsSuccessStatusCode ? "Solicitud de credito enviada." : "No se pudo enviar la solicitud de credito."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SolicitudCreditoResponse
+                {
+                    status = false,
+                    message = ex.Message
+                };
+            }
         }
 
         private static CreditoDisponibleResponse ParseCreditoResponse(string rawJson)

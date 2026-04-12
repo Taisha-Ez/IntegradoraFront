@@ -94,7 +94,7 @@
                     <!-- Paso 3 -->
                     <StackPanel x:Name="Step3" Visibility="Collapsed">
                         <Label Content="Ingresos Mensuales" Foreground="#AAA"/>
-                        <TextBox Style="{StaticResource RoundedTextBox}" Height="32"/>
+                        <TextBox x:Name="txtIngresos" Style="{StaticResource RoundedTextBox}" Height="32"/>
                     </StackPanel>
 
                     <!-- Paso 4 -->
