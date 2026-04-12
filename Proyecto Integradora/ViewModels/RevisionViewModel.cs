@@ -33,16 +33,17 @@ namespace Proyecto_Integradora.ViewModels
 
         private async Task CargarPendientesAsync()
         {
-            var pendientes = await _adminService.GetAdminValesAsync();
+            var todos = await _adminService.GetAdminValesAsync();
 
             // Refuerzo: si la API responde mezcla de estados, mostramos solo pendientes.
-            pendientes = pendientes
+            var pendientes = todos
                 .Where(v => !string.IsNullOrWhiteSpace(v.status)
                     && (v.status.Equals("Pendiente", System.StringComparison.OrdinalIgnoreCase)
                         || v.status.Equals("Pendientes", System.StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
-            ValesPendientes = new ObservableCollection<Vale>(pendientes);
+            // Si no hay pendientes, mostramos todo para evitar una tabla vacia.
+            ValesPendientes = new ObservableCollection<Vale>(pendientes.Count > 0 ? pendientes : todos);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
