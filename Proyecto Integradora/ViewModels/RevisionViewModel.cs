@@ -1,0 +1,59 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Proyecto_Integradora.Models;
+using Proyecto_Integradora.Services;
+
+namespace Proyecto_Integradora.ViewModels
+{
+    public class RevisionViewModel : INotifyPropertyChanged
+    {
+        private readonly AdminService _adminService = new AdminService();
+        private ObservableCollection<Vale> _valesPendientes;
+
+        public ObservableCollection<Vale> ValesPendientes
+        {
+            get => _valesPendientes;
+            set
+            {
+                _valesPendientes = value;
+                OnPropertyChanged(nameof(ValesPendientes));
+            }
+        }
+
+        public ICommand RecargarCommand { get; }
+
+        public RevisionViewModel()
+        {
+            RecargarCommand = new RelayCommand(async () => await CargarPendientesAsync());
+            _ = CargarPendientesAsync();
+        }
+
+        private async Task CargarPendientesAsync()
+        {
+            var pendientes = await _adminService.GetValesListAsync("Pendiente");
+
+            // Fallback por variaciones de nombre de estado en API.
+            if (pendientes.Count == 0)
+            {
+                pendientes = await _adminService.GetValesListAsync("Pendientes");
+            }
+
+            // Refuerzo: si la API responde mezcla de estados, mostramos solo pendientes.
+            pendientes = pendientes
+                .Where(v => !string.IsNullOrWhiteSpace(v.status)
+                    && (v.status.Equals("Pendiente", System.StringComparison.OrdinalIgnoreCase)
+                        || v.status.Equals("Pendientes", System.StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            ValesPendientes = new ObservableCollection<Vale>(pendientes);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}

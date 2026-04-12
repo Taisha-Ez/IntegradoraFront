@@ -4,10 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Proyecto_Integradora.Views"
+      xmlns:vm="clr-namespace:Proyecto_Integradora.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="RevisiónView"
       FontFamily="Segoe UI">
+
+    <Page.DataContext>
+        <vm:RevisionViewModel/>
+    </Page.DataContext>
 
     <Page.Resources>
         <Style x:Key="SearchButtonStyle" TargetType="Button">
@@ -81,12 +86,40 @@
 
                     <Button Content="BUSCAR" 
                             Style="{StaticResource SearchButtonStyle}" 
+                            Command="{Binding RecargarCommand}"
                             HorizontalAlignment="Right" 
                             Margin="0,0,20,0"/>
                 </Grid>
             </Border>
 
             <Grid Grid.Row="1" Margin="30">
+                <DataGrid ItemsSource="{Binding ValesPendientes}"
+                          AutoGenerateColumns="False"
+                          Background="Transparent"
+                          Foreground="White"
+                          BorderThickness="0"
+                          GridLinesVisibility="None"
+                          IsReadOnly="True"
+                          RowBackground="#0D0D0D"
+                          AlternatingRowBackground="#121212">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding id}" Width="170"/>
+                        <DataGridTextColumn Header="Usuario" Binding="{Binding usuario}" Width="100"/>
+                        <DataGridTextColumn Header="Nombre Completo" Width="*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding StringFormat="{}{0} {1} {2}">
+                                    <Binding Path="nombre"/>
+                                    <Binding Path="apellidoPaterno"/>
+                                    <Binding Path="apellidoMaterno"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Monto" Binding="{Binding montoSolicitado, StringFormat=C}" Width="120"/>
+                        <DataGridTextColumn Header="Plazo" Binding="{Binding plazoPagoMeses, StringFormat='{}{0} Meses'}" Width="110"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding status}" Width="110"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding createdAt, StringFormat=d}" Width="120"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </Grid>
     </Grid>
