@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
 using Proyecto_Integradora.Models;
 using Proyecto_Integradora.Core;
@@ -80,9 +81,41 @@ namespace Proyecto_Integradora.Services
         {
             try
             {
+                var normalizedValeId = (valeId ?? string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(normalizedValeId))
+                {
+                    return new ResolverValeResponse
+                    {
+                        status = false,
+                        message = "El vale seleccionado no tiene un id valido."
+                    };
+                }
+
                 SetJwtHeader();
                 var payload = new ResolverValeRequest { status = status };
-                var response = await _httpClient.PostAsJsonAsync($"http://localhost:5185/api/admin/vales/{valeId}/resolver", payload);
+                var requestUrl = $"http://localhost:5185/api/admin/vales/{Uri.EscapeDataString(normalizedValeId)}/resolver";
+                var payloadJson = JsonSerializer.Serialize(payload);
+
+                HttpResponseMessage response = await _httpClient.PostAsync(
+                    requestUrl,
+                    new StringContent(payloadJson, Encoding.UTF8, "application/json"));
+
+                if (!response.IsSuccessStatusCode && (int)response.StatusCode == 404)
+                {
+                    response = await _httpClient.PutAsync(
+                        requestUrl,
+                        new StringContent(payloadJson, Encoding.UTF8, "application/json"));
+                }
+
+                if (!response.IsSuccessStatusCode && (int)response.StatusCode == 404)
+                {
+                    var patchRequest = new HttpRequestMessage(HttpMethod.Patch, requestUrl)
+                    {
+                        Content = new StringContent(payloadJson, Encoding.UTF8, "application/json")
+                    };
+                    response = await _httpClient.SendAsync(patchRequest);
+                }
+
                 var rawContent = await response.Content.ReadAsStringAsync();
 
                 if (string.IsNullOrWhiteSpace(rawContent))
@@ -92,7 +125,7 @@ namespace Proyecto_Integradora.Services
                         status = response.IsSuccessStatusCode,
                         message = response.IsSuccessStatusCode
                             ? "Vale resuelto correctamente."
-                            : $"No se pudo resolver el vale. HTTP {(int)response.StatusCode}."
+                            : $"No se pudo resolver el vale. HTTP {(int)response.StatusCode}. URL: {requestUrl}"
                     };
                 }
 
@@ -117,7 +150,7 @@ namespace Proyecto_Integradora.Services
                 return new ResolverValeResponse
                 {
                     status = response.IsSuccessStatusCode,
-                    message = response.IsSuccessStatusCode ? rawContent : $"No se pudo resolver el vale: {rawContent}"
+                    message = response.IsSuccessStatusCode ? rawContent : $"No se pudo resolver el vale ({requestUrl}): {rawContent}"
                 };
             }
             catch (Exception ex)
