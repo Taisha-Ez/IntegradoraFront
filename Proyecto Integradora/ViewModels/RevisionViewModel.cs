@@ -46,11 +46,10 @@ namespace Proyecto_Integradora.ViewModels
         {
             var todos = await _adminService.GetAdminValesAsync();
 
-            // Refuerzo: si la API responde mezcla de estados, mostramos solo pendientes.
+            // Refuerzo: detectamos cualquier variante de pendiente (Pendiente, Pendientes, PendienteRevision, etc.).
             var pendientes = todos
                 .Where(v => !string.IsNullOrWhiteSpace(v.status)
-                    && (v.status.Equals("Pendiente", System.StringComparison.OrdinalIgnoreCase)
-                        || v.status.Equals("Pendientes", System.StringComparison.OrdinalIgnoreCase)))
+                    && v.status.Contains("Pend", System.StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             // Si no hay pendientes, mostramos todo para evitar una tabla vacia.
@@ -74,6 +73,16 @@ namespace Proyecto_Integradora.ViewModels
                 {
                     status = false,
                     message = "Selecciona un vale antes de resolverlo."
+                };
+            }
+
+            if (string.IsNullOrWhiteSpace(ValeSeleccionado.status)
+                || !ValeSeleccionado.status.Contains("Pend", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new ResolverValeResponse
+                {
+                    status = false,
+                    message = "Solo se pueden resolver vales en estado Pendiente."
                 };
             }
 
