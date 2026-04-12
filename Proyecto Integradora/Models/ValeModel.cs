@@ -16,6 +16,7 @@ namespace Proyecto_Integradora.Models
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
         public decimal montoSolicitado { get; set; }
+        public decimal montoRestante { get; set; }
         public int plazoPagoMeses { get; set; }
         public string status { get; set; }
         public DateTime createdAt { get; set; }

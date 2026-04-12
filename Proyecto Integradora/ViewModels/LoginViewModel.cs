@@ -66,7 +66,7 @@ namespace Proyecto_Integradora.ViewModels
                     }
                     else if (rol == "cliente")
                     {
-                        mainWindow.MainFrame.Navigate(new Uri("Views/FormularioSolicitarValeView.xaml", UriKind.Relative));
+                        mainWindow.MainFrame.Navigate(new Uri("Views/ClienteInicioView.xaml", UriKind.Relative));
                     }
                     else
                     {

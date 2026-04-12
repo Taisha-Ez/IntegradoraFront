@@ -3,15 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Proyecto_Integradora.Models
 {
     // Lo que enviamos
     public class SolicitudRequest
     {
-        public int userId { get; set; }
-        public decimal montoSolicitado { get; set; }
+        [JsonPropertyName("monto_solicitar")]
+        public decimal montoSolicitar { get; set; }
+
+        [JsonPropertyName("plazo_pago_meses")]
         public int plazoPagoMeses { get; set; }
+    }
+
+    public class PagoValeRequest
+    {
+        [JsonPropertyName("monto_pago")]
+        public decimal montoPago { get; set; }
     }
 
     // Lo que recibimos
@@ -20,5 +29,19 @@ namespace Proyecto_Integradora.Models
         public bool status { get; set; }
         public string message { get; set; }
         public object data { get; set; } // Opcional
+    }
+
+    public class PagoValeResponse
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+        public object data { get; set; }
+    }
+
+    public class CreditoDisponibleResponse
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+        public decimal limiteCredito { get; set; }
     }
 }

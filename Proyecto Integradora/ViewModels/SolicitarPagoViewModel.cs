@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Proyecto_Integradora.Models;
@@ -20,11 +19,43 @@ namespace Proyecto_Integradora.ViewModels
         private int _plazo = 3;
         private double _pagoMensual;
         private double _totalDevolver;
+        private double _limiteCredito = 50000;
+
+        public double LimiteCredito
+        {
+            get => _limiteCredito;
+            set
+            {
+                _limiteCredito = value;
+                OnPropertyChanged(nameof(LimiteCredito));
+
+                if (Monto > _limiteCredito)
+                {
+                    Monto = _limiteCredito;
+                }
+            }
+        }
 
         public double Monto
         {
             get => _monto;
-            set { _monto = value; OnPropertyChanged(nameof(Monto)); CalcularResumen(); }
+            set
+            {
+                var boundedValue = value;
+                if (boundedValue > LimiteCredito)
+                {
+                    boundedValue = LimiteCredito;
+                }
+
+                if (boundedValue < 1)
+                {
+                    boundedValue = 1;
+                }
+
+                _monto = boundedValue;
+                OnPropertyChanged(nameof(Monto));
+                CalcularResumen();
+            }
         }
 
         public int Plazo
@@ -51,6 +82,24 @@ namespace Proyecto_Integradora.ViewModels
         {
             EnviarCommand = new RelayCommand(async () => await EnviarSolicitud());
             CalcularResumen(); // Cálculo inicial
+            _ = CargarLimiteCredito();
+        }
+
+        private async Task CargarLimiteCredito()
+        {
+            var credito = await _service.ConsultarCreditoDisponibleAsync();
+            if (credito.status && credito.limiteCredito > 0)
+            {
+                LimiteCredito = (double)credito.limiteCredito;
+                return;
+            }
+
+            MessageBox.Show(string.IsNullOrWhiteSpace(credito.message)
+                ? "No se pudo consultar el limite de credito. Se usara un limite temporal de $50,000."
+                : credito.message,
+                "Aviso",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
         }
 
         private void CalcularResumen()
@@ -63,10 +112,15 @@ namespace Proyecto_Integradora.ViewModels
 
         private async Task EnviarSolicitud()
         {
+            if (Monto > LimiteCredito)
+            {
+                MessageBox.Show($"El monto solicitado no puede superar tu limite disponible (${LimiteCredito:N2}).", "Validacion");
+                return;
+            }
+
             var req = new SolicitudRequest
             {
-                userId = 4, // Como en tu ejemplo
-                montoSolicitado = (decimal)Monto,
+                montoSolicitar = (decimal)Monto,
                 plazoPagoMeses = Plazo
             };
 
