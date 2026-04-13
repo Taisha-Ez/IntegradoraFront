@@ -7,18 +7,90 @@
         SizeToContent="WidthAndHeight"
         Background="#111111"
         Foreground="White">
+    <Window.Resources>
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#1A1A1A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" 
+                                Grid.Column="2" 
+                                Focusable="False" 
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                ClickMode="Press" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentPresenter" 
+                                IsHitTestVisible="False" 
+                                Content="{TemplateBinding SelectionBoxItem}" 
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
+                                Margin="{TemplateBinding Padding}" 
+                                VerticalAlignment="Center" 
+                                Foreground="White"/>
+                            <Popup x:Name="Popup" 
+                                Placement="Bottom" 
+                                AllowsTransparency="True" 
+                                IsOpen="{TemplateBinding IsDropDownOpen}" 
+                                PopupAnimation="Slide">
+                                <Border x:Name="DropDownBorder" 
+                                    Background="#1A1A1A" 
+                                    BorderBrush="#333333" 
+                                    BorderThickness="1" 
+                                    Padding="1">
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Border Padding="24" BorderBrush="#2A2A2A" BorderThickness="1">
         <StackPanel Width="360">
             <TextBlock Text="Resolver vale seleccionado" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
             <TextBlock x:Name="TxtValeId" Foreground="#BBBBBB" TextWrapping="Wrap" Margin="0,0,0,16"/>
 
             <TextBlock Text="Selecciona el estado final:" Margin="0,0,0,8"/>
-            <ComboBox x:Name="CmbEstado" SelectedIndex="0" Height="34" Background="#1A1A1A" Foreground="White" BorderBrush="#333333" Margin="0,0,0,20">
+            <ComboBox x:Name="CmbEstado" SelectedIndex="0" Style="{StaticResource DarkComboBoxStyle}" Margin="0,0,0,20">
                 <ComboBox.Resources>
                     <Style TargetType="ComboBoxItem">
                         <Setter Property="Foreground" Value="White"/>
                         <Setter Property="Background" Value="#1A1A1A"/>
-                        <Setter Property="Padding" Value="5,6"/>
+                        <Setter Property="Padding" Value="8,8"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ComboBoxItem">
+                                    <Border x:Name="Border" 
+                                        Background="{TemplateBinding Background}" 
+                                        Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#D32F2F"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#D32F2F"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ComboBox.Resources>
                 <ComboBoxItem Content="Aceptado"/>
