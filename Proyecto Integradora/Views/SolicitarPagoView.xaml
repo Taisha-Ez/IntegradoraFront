@@ -47,6 +47,13 @@
                           SelectedValuePath="Tag"
                           SelectedValue="{Binding Plazo, Mode=TwoWay}"
                           Height="35" Background="#1A1A1A" BorderBrush="#333" Foreground="White" Padding="10,5">
+                    <ComboBox.Resources>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="#1A1A1A"/>
+                            <Setter Property="Padding" Value="5,8"/>
+                        </Style>
+                    </ComboBox.Resources>
                     <ComboBoxItem Content="3 Meses" Tag="3" IsSelected="True"/>
                     <ComboBoxItem Content="6 Meses" Tag="6"/>
                     <ComboBoxItem Content="12 Meses" Tag="12"/>
