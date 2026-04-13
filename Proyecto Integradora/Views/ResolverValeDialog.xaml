@@ -34,8 +34,7 @@
                                 ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
                                 ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
                                 Margin="{TemplateBinding Padding}" 
-                                VerticalAlignment="Center" 
-                                Foreground="White"/>
+                                VerticalAlignment="Center"/>
                             <Popup x:Name="Popup" 
                                 Placement="Bottom" 
                                 AllowsTransparency="True" 
