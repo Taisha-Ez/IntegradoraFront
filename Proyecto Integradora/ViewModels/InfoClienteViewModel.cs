@@ -11,32 +11,25 @@ namespace Proyecto_Integradora.ViewModels
     {
         private readonly AdminService _adminService = new AdminService();
 
-        private ObservableCollection<Customer> _clientes;
-        public ObservableCollection<Customer> Clientes
+        private ObservableCollection<AdminCreditoCliente> _clientes;
+        public ObservableCollection<AdminCreditoCliente> Clientes
         {
             get => _clientes;
             set { _clientes = value; OnPropertyChanged(nameof(Clientes)); }
         }
 
-        // Comandos separados para evitar el error de argumentos en el delegado
-        public ICommand CargarTodosCommand { get; }
-        public ICommand CargarCumplidosCommand { get; }
-        public ICommand CargarMorososCommand { get; }
+        public ICommand RecargarCommand { get; }
 
         public InfoClienteViewModel()
         {
-            CargarTodosCommand = new RelayCommand(async () => await ObtenerDatos(""));
-            CargarCumplidosCommand = new RelayCommand(async () => await ObtenerDatos("Cumplidos"));
-            CargarMorososCommand = new RelayCommand(async () => await ObtenerDatos("Morosos"));
-
-            // Carga inicial
-            _ = ObtenerDatos("");
+            RecargarCommand = new RelayCommand(async () => await ObtenerDatos());
+            _ = ObtenerDatos();
         }
 
-        private async Task ObtenerDatos(string filtro)
+        private async Task ObtenerDatos()
         {
-            var datos = await _adminService.GetCustomerListAsync(filtro);
-            Clientes = new ObservableCollection<Customer>(datos);
+            var datos = await _adminService.GetAdminCreditoClientesAsync();
+            Clientes = new ObservableCollection<AdminCreditoCliente>(datos);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

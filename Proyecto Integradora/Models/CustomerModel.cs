@@ -23,4 +23,25 @@ namespace Proyecto_Integradora.Models
         public string message { get; set; }
         public List<Customer> data { get; set; }
     }
+
+    public class AdminCreditoCliente
+    {
+        public int userId { get; set; }
+        public string usuario { get; set; }
+        public string nombreCompleto { get; set; }
+        public string tipoUsuario { get; set; }
+        public int creditRequestId { get; set; }
+        public string curpRfc { get; set; }
+        public decimal monthlyIncome { get; set; }
+        public decimal estimatedCredit { get; set; }
+        public string status { get; set; }
+        public DateTime createdAt { get; set; }
+    }
+
+    public class AdminCreditoClientesResponse
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+        public List<AdminCreditoCliente> data { get; set; }
+    }
 }

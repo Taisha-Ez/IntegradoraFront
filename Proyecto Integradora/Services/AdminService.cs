@@ -77,6 +77,20 @@ namespace Proyecto_Integradora.Services
             }
         }
 
+        public async Task<List<AdminCreditoCliente>> GetAdminCreditoClientesAsync()
+        {
+            try
+            {
+                SetJwtHeader();
+                var response = await _httpClient.GetFromJsonAsync<AdminCreditoClientesResponse>("http://localhost:5185/api/admin/creditos/clientes");
+                return response?.status == true ? response.data : new List<AdminCreditoCliente>();
+            }
+            catch (Exception)
+            {
+                return new List<AdminCreditoCliente>();
+            }
+        }
+
         public async Task<ResolverValeResponse> ResolverValeAsync(string valeId, string status)
         {
             try

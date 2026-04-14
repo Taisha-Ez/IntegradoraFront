@@ -4,10 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Proyecto_Integradora.Views"
+      xmlns:vm="clr-namespace:Proyecto_Integradora.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
       Title="ClientePantallaPrinicipalView"
       FontFamily="Segoe UI">
+
+    <Page.DataContext>
+        <vm:InfoClienteViewModel/>
+    </Page.DataContext>
 
     <Page.Resources>
         <Style x:Key="NavbarButtonStyle" TargetType="Button">
@@ -39,6 +44,21 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <Style x:Key="DarkGridColumnHeader" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Foreground" Value="#DDDDDD"/>
+            <Setter Property="BorderBrush" Value="#222222"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="DarkGridCell" TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="#F2F2F2"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
         </Style>
     </Page.Resources>
 
@@ -87,6 +107,32 @@
             </Border>
 
             <Grid Grid.Row="1" Margin="30">
+                <DataGrid ItemsSource="{Binding Clientes}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          Background="Transparent"
+                          Foreground="White"
+                          BorderThickness="0"
+                          GridLinesVisibility="None"
+                          RowBackground="#101010"
+                          AlternatingRowBackground="#151515"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DarkGridColumnHeader}"/>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource DarkGridCell}"/>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Usuario" Binding="{Binding usuario}" Width="120"/>
+                        <DataGridTextColumn Header="Nombre Completo" Binding="{Binding nombreCompleto}" Width="*"/>
+                        <DataGridTextColumn Header="CURP / RFC" Binding="{Binding curpRfc}" Width="170"/>
+                        <DataGridTextColumn Header="Ingreso Mensual" Binding="{Binding monthlyIncome, StringFormat=C}" Width="120"/>
+                        <DataGridTextColumn Header="Crédito Estimado" Binding="{Binding estimatedCredit, StringFormat=C}" Width="130"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding status}" Width="100"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding createdAt, StringFormat=d}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </Grid>
     </Grid>
