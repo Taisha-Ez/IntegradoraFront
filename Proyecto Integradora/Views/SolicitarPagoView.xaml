@@ -73,8 +73,17 @@
                 <ComboBox x:Name="PlazoCombo" 
                           SelectedValuePath="Tag"
                           SelectedValue="{Binding Plazo, Mode=TwoWay}"
-                          Height="35" Style="{StaticResource DarkComboBoxStyle}">
+                                                    Height="35"
+                                                    Style="{StaticResource DarkComboBoxStyle}"
+                                                    Background="#1A1A1A"
+                                                    Foreground="White"
+                                                    BorderBrush="#333">
                     <ComboBox.Resources>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1A1A1A"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#1A1A1A"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#D32F2F"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="White"/>
                         <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DarkComboBoxItemStyle}"/>
                     </ComboBox.Resources>
                     <ComboBoxItem Content="3 Meses" Tag="3" IsSelected="True"/>
