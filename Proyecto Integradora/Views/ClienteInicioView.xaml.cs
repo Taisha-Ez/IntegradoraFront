@@ -39,36 +39,44 @@ namespace Proyecto_Integradora.Views
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
 
-        // Mostramos formulario SOLO cuando API responde status=false y data=null (no tiene crédito)
+        // Verificamos si el usuario tiene crédito registrado
         var tieneCredito = await _customerService.TieneCreditoRegistradoAsync();
         
         System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] tieneCredito result: {tieneCredito}");
 
+        // Si status=false y data=null → mostrar formulario para SOLICITAR crédito
         if (tieneCredito == true)
         {
-            System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a FormularioSolicitarValeView");
+            System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a FormularioSolicitarValeView (sin crédito)");
             ContentFrame.Navigate(new FormularioSolicitarValeView());
             return;
         }
 
-        // En cualquier otro caso (tiene crédito o error), ir a pagar
-        System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a SolicitarPagoView");
-        ContentFrame.Navigate(new SolicitarPagoView());
+        // Si tiene crédito → mostrar vista de CRÉDITO (es la vista inicial)
+        System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a CreditoView (tiene crédito)");
+        ContentFrame.Navigate(new CreditoView());
     }
 
     private void NavegarSolicitar_Click(object sender, RoutedEventArgs e)
     {
         // Ocultamos el panel de bienvenida
         WelcomePanel.Visibility = Visibility.Collapsed;
-        // Navegamos a la vista correspondiente
-        ContentFrame.Navigate(new SolicitarPagoView());
+        // Navegamos a solicitar crédito
+        ContentFrame.Navigate(new FormularioSolicitarValeView());
     }
 
     private void NavegarPagar_Click(object sender, RoutedEventArgs e)
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
-        // Navegamos a la vista correspondiente
-        ContentFrame.Navigate(new PagarView());
+        // Navegamos a pagar vales
+        ContentFrame.Navigate(new SolicitarPagoView());
+    }
+
+    private void NavegarCredito_Click(object sender, RoutedEventArgs e)
+    {
+        WelcomePanel.Visibility = Visibility.Collapsed;
+        // Navegamos a ver saldo de crédito
+        ContentFrame.Navigate(new CreditoView());
     }
 }
 }

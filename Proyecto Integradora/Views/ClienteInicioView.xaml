@@ -105,6 +105,11 @@
                              Style="{StaticResource BotonNavCliente}"
                              Click="NavegarPagar_Click"/>
 
+                <RadioButton Content="CRÉDITO" 
+                             GroupName="MenuCliente"
+                             Style="{StaticResource BotonNavCliente}"
+                             Click="NavegarCredito_Click"/>
+
                 <RadioButton Content="CERRAR SESIÓN" 
                         Command="{Binding RegresarCommand}"
                         Style="{StaticResource BotonNavCliente}"

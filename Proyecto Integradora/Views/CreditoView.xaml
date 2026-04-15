@@ -1,0 +1,79 @@
+<Page x:Class="Proyecto_Integradora.Views.CreditoView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:Proyecto_Integradora.Views"
+      Title="CreditoView" 
+      Background="#0A0A0A"
+      Foreground="#F2F2F2">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="500">
+            <!-- Loading Indicator -->
+            <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                        VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Cargando..." 
+                           Foreground="#A0A0A0"
+                           FontSize="16"
+                           TextAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Credit Info Card -->
+            <Border Background="#1A1A1A"
+                    BorderBrush="#D32F2F"
+                    BorderThickness="2"
+                    CornerRadius="8"
+                    Padding="30"
+                    Margin="20"
+                    Visibility="{Binding IsLoading, Converter={StaticResource InvertBoolToVisibilityConverter}}">
+                <StackPanel>
+                    <!-- Title -->
+                    <TextBlock Text="Información de Crédito"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#D32F2F"
+                               Margin="0,0,0,20"
+                               TextAlignment="Center"/>
+
+                    <!-- Usuario -->
+                    <TextBlock Text="{Binding Usuario, StringFormat='Usuario: {0}'}"
+                               FontSize="14"
+                               Foreground="#F2F2F2"
+                               Margin="0,10,0,10"/>
+
+                    <!-- Saldo Disponible -->
+                    <Border Background="#0D0D0D"
+                            CornerRadius="6"
+                            Padding="15"
+                            Margin="0,15,0,15">
+                        <StackPanel>
+                            <TextBlock Text="Saldo Disponible"
+                                       FontSize="12"
+                                       Foreground="#A0A0A0"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="{Binding SaldoDisponible}"
+                                       FontSize="28"
+                                       FontWeight="Bold"
+                                       Foreground="#D32F2F"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Mensaje -->
+                    <TextBlock Text="{Binding Mensaje}"
+                               FontSize="14"
+                               Foreground="#A0A0A0"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,20,0,0"/>
+
+                    <!-- Info Text -->
+                    <TextBlock Foreground="#808080"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,20,0,0">
+                        <Run Text="Este es tu saldo de crédito disponible para realizar compras o solicitar vales."/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Page>
