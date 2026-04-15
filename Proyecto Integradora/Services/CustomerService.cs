@@ -321,6 +321,48 @@ namespace Proyecto_Integradora.Services
             }
         }
 
+        public async Task<bool?> TieneCreditoRegistradoAsync()
+        {
+            try
+            {
+                SetJwtHeader();
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Creditos/saldo");
+                var raw = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                if (string.IsNullOrWhiteSpace(raw))
+                {
+                    return null;
+                }
+
+                using var doc = JsonDocument.Parse(raw);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("data", out var dataElement))
+                {
+                    if (dataElement.ValueKind == JsonValueKind.Null || dataElement.ValueKind == JsonValueKind.Undefined)
+                    {
+                        return false;
+                    }
+
+                    if (dataElement.ValueKind == JsonValueKind.Object)
+                    {
+                        return true;
+                    }
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private static CreditoDisponibleResponse ParseCreditoResponse(string rawJson)
         {
             using var doc = JsonDocument.Parse(rawJson);

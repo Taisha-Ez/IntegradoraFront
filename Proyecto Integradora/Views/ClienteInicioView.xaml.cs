@@ -39,18 +39,9 @@ namespace Proyecto_Integradora.Views
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
 
-        // Regla principal: consultar credito disponible para decidir la vista inicial.
-        var creditoDisponible = await _customerService.ConsultarCreditoDisponibleAsync();
-        var tieneCreditoRegistrado = creditoDisponible.status || creditoDisponible.limiteCredito > 0;
-
-        // Fallback: si el backend responde distinto, verificamos datos directos de saldo.
-        if (!tieneCreditoRegistrado)
-        {
-            var saldoCredito = await _customerService.ConsultarSaldoCreditoAsync();
-            tieneCreditoRegistrado = saldoCredito.data != null;
-        }
-
-        if (tieneCreditoRegistrado)
+        // Solo mostramos formulario cuando API responde explicitamente data=null.
+        var tieneCredito = await _customerService.TieneCreditoRegistradoAsync();
+        if (tieneCredito != false)
         {
             ContentFrame.Navigate(new SolicitarPagoView());
             return;
