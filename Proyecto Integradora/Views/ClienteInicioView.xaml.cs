@@ -61,21 +61,31 @@ namespace Proyecto_Integradora.Views
     {
         // Ocultamos el panel de bienvenida
         WelcomePanel.Visibility = Visibility.Collapsed;
-        // Navegamos a solicitar un VALE (no crédito)
-        ContentFrame.Navigate(new FormularioSolicitarValeView());
+        // Navegamos a solicitar un VALE
+        ContentFrame.Navigate(new SolicitarPagoView());
     }
 
     private void NavegarPagar_Click(object sender, RoutedEventArgs e)
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
         // Navegamos a pagar vales
-        ContentFrame.Navigate(new SolicitarPagoView());
+        ContentFrame.Navigate(new PagarView());
     }
 
-    private void NavegarCredito_Click(object sender, RoutedEventArgs e)
+    private async void NavegarCredito_Click(object sender, RoutedEventArgs e)
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
-        // Navegamos a ver saldo de crédito
+
+        var tieneCredito = await _customerService.TieneCreditoRegistradoAsync();
+
+        if (tieneCredito == true)
+        {
+            // No tiene crédito autorizado activo, por eso mostramos el formulario de solicitud
+            ContentFrame.Navigate(new SolicitarCreditoView());
+            return;
+        }
+
+        // Si sí tiene crédito, mostramos su saldo
         ContentFrame.Navigate(new CreditoView());
     }
 }

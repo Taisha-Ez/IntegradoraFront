@@ -114,8 +114,8 @@
 
             <!-- SECCIÓN IZQUIERDA: CONFIGURACIÓN -->
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,40,0">
-                <TextBlock Text="Nueva Solicitud" FontSize="28" Foreground="White" FontWeight="Bold" Margin="0,0,0,10"/>
-                <TextBlock Text="Configura los detalles de tu crédito a continuación." Foreground="#888" Margin="0,0,0,30"/>
+                <TextBlock Text="Solicitud de Vale" FontSize="28" Foreground="White" FontWeight="Bold" Margin="0,0,0,10"/>
+                <TextBlock Text="Configura los detalles de tu vale a continuación." Foreground="#888" Margin="0,0,0,30"/>
                 <TextBlock Text="{Binding LimiteCredito, StringFormat=Límite disponible: ${}{0:N2}}" Foreground="#55D6A9" Margin="0,0,0,10"/>
 
                 <!-- MONTO -->
@@ -182,7 +182,7 @@
                 </Border.Effect>
 
                 <StackPanel>
-                    <TextBlock Text="Resumen de Pago" Foreground="#FF3131" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,20"/>
+                    <TextBlock Text="Resumen del Vale" Foreground="#FF3131" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,20"/>
 
                     <DockPanel Margin="0,10">
                         <TextBlock Text="Tasa de interés" Foreground="#888"/>
