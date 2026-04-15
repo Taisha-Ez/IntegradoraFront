@@ -39,15 +39,16 @@ namespace Proyecto_Integradora.Views
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
 
-        // Solo mostramos formulario cuando API responde explicitamente data=null.
+        // Mostramos formulario SOLO cuando API responde status=false y data=null (no tiene crédito)
         var tieneCredito = await _customerService.TieneCreditoRegistradoAsync();
-        if (tieneCredito != false)
+        if (tieneCredito == true)
         {
-            ContentFrame.Navigate(new SolicitarPagoView());
+            ContentFrame.Navigate(new FormularioSolicitarValeView());
             return;
         }
 
-        ContentFrame.Navigate(new FormularioSolicitarValeView());
+        // En cualquier otro caso (tiene crédito o error), ir a pagar
+        ContentFrame.Navigate(new SolicitarPagoView());
     }
 
     private void NavegarSolicitar_Click(object sender, RoutedEventArgs e)

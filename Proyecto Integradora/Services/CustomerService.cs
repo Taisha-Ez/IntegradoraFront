@@ -342,20 +342,21 @@ namespace Proyecto_Integradora.Services
                 using var doc = JsonDocument.Parse(raw);
                 var root = doc.RootElement;
 
-                if (root.TryGetProperty("data", out var dataElement))
-                {
-                    if (dataElement.ValueKind == JsonValueKind.Null || dataElement.ValueKind == JsonValueKind.Undefined)
-                    {
-                        return false;
-                    }
+                // Verificar si status es false Y data es null
+                bool statusIsFalse = root.TryGetProperty("status", out var statusProp) && 
+                                     statusProp.ValueKind == JsonValueKind.False;
+                
+                bool dataIsNull = root.TryGetProperty("data", out var dataElement) && 
+                                  (dataElement.ValueKind == JsonValueKind.Null || dataElement.ValueKind == JsonValueKind.Undefined);
 
-                    if (dataElement.ValueKind == JsonValueKind.Object)
-                    {
-                        return true;
-                    }
+                // Si status=false Y data=null → retorna true (mostrar formulario)
+                if (statusIsFalse && dataIsNull)
+                {
+                    return true;
                 }
 
-                return null;
+                // En cualquier otro caso → retorna false (ir a pagar)
+                return false;
             }
             catch
             {
