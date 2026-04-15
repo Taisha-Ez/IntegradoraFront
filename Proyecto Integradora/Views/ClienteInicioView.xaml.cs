@@ -41,13 +41,18 @@ namespace Proyecto_Integradora.Views
 
         // Mostramos formulario SOLO cuando API responde status=false y data=null (no tiene crédito)
         var tieneCredito = await _customerService.TieneCreditoRegistradoAsync();
+        
+        System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] tieneCredito result: {tieneCredito}");
+
         if (tieneCredito == true)
         {
+            System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a FormularioSolicitarValeView");
             ContentFrame.Navigate(new FormularioSolicitarValeView());
             return;
         }
 
         // En cualquier otro caso (tiene crédito o error), ir a pagar
+        System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a SolicitarPagoView");
         ContentFrame.Navigate(new SolicitarPagoView());
     }
 
