@@ -39,12 +39,17 @@ namespace Proyecto_Integradora.Views
     {
         WelcomePanel.Visibility = Visibility.Collapsed;
 
-        var saldoCredito = await _customerService.ConsultarSaldoCreditoAsync();
-        var tieneCreditoRegistrado = saldoCredito.data != null
-            && (
-                saldoCredito.data.creditRequestId > 0
-                || !string.IsNullOrWhiteSpace(saldoCredito.data.status)
-            );
+        // Regla principal: consultar credito disponible para decidir la vista inicial.
+        var creditoDisponible = await _customerService.ConsultarCreditoDisponibleAsync();
+        var tieneCreditoRegistrado = creditoDisponible.status || creditoDisponible.limiteCredito > 0;
+
+        // Fallback: si el backend responde distinto, verificamos datos directos de saldo.
+        if (!tieneCreditoRegistrado)
+        {
+            var saldoCredito = await _customerService.ConsultarSaldoCreditoAsync();
+            tieneCreditoRegistrado = saldoCredito.data != null
+                && (saldoCredito.data.creditRequestId > 0 || !string.IsNullOrWhiteSpace(saldoCredito.data.status));
+        }
 
         if (tieneCreditoRegistrado)
         {

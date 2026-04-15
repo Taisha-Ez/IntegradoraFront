@@ -101,11 +101,11 @@ namespace Proyecto_Integradora.Services
         public async Task<CreditoDisponibleResponse> ConsultarCreditoDisponibleAsync()
         {
             var saldo = await ConsultarSaldoCreditoAsync();
-            if (saldo.status && saldo.data != null)
+            if (saldo.data != null)
             {
                 return new CreditoDisponibleResponse
                 {
-                    status = true,
+                    status = saldo.status || saldo.data.creditRequestId > 0 || !string.IsNullOrWhiteSpace(saldo.data.status),
                     message = saldo.message,
                     limiteCredito = saldo.data.saldoDisponible
                 };
