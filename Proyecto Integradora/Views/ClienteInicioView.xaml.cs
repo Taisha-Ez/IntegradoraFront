@@ -47,8 +47,7 @@ namespace Proyecto_Integradora.Views
         if (!tieneCreditoRegistrado)
         {
             var saldoCredito = await _customerService.ConsultarSaldoCreditoAsync();
-            tieneCreditoRegistrado = saldoCredito.data != null
-                && (saldoCredito.data.creditRequestId > 0 || !string.IsNullOrWhiteSpace(saldoCredito.data.status));
+            tieneCreditoRegistrado = saldoCredito.data != null;
         }
 
         if (tieneCreditoRegistrado)

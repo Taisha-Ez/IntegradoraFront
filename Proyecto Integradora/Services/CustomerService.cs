@@ -105,7 +105,7 @@ namespace Proyecto_Integradora.Services
             {
                 return new CreditoDisponibleResponse
                 {
-                    status = saldo.status || saldo.data.creditRequestId > 0 || !string.IsNullOrWhiteSpace(saldo.data.status),
+                    status = true,
                     message = saldo.message,
                     limiteCredito = saldo.data.saldoDisponible
                 };
