@@ -40,7 +40,13 @@ namespace Proyecto_Integradora.Views
         WelcomePanel.Visibility = Visibility.Collapsed;
 
         var saldoCredito = await _customerService.ConsultarSaldoCreditoAsync();
-        if (saldoCredito.status && saldoCredito.data != null)
+        var tieneCreditoRegistrado = saldoCredito.data != null
+            && (
+                saldoCredito.data.creditRequestId > 0
+                || !string.IsNullOrWhiteSpace(saldoCredito.data.status)
+            );
+
+        if (tieneCreditoRegistrado)
         {
             ContentFrame.Navigate(new SolicitarPagoView());
             return;

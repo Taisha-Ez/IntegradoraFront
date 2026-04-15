@@ -154,11 +154,61 @@ namespace Proyecto_Integradora.Services
             try
             {
                 SetJwtHeader();
-                var response = await _httpClient.GetFromJsonAsync<SaldoCreditoResponse>($"{BaseUrl}/Creditos/saldo");
+                var httpResponse = await _httpClient.GetAsync($"{BaseUrl}/Creditos/saldo");
+                var raw = await httpResponse.Content.ReadAsStringAsync();
 
-                if (response != null)
+                if (!string.IsNullOrWhiteSpace(raw))
                 {
-                    return response;
+                    try
+                    {
+                        var typed = JsonSerializer.Deserialize<SaldoCreditoResponse>(raw, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+
+                        if (typed != null)
+                        {
+                            return typed;
+                        }
+                    }
+                    catch
+                    {
+                        // Intentamos parseo manual abajo para estructuras ligeramente distintas.
+                    }
+
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(raw);
+                        var root = doc.RootElement;
+
+                        var parsed = new SaldoCreditoResponse
+                        {
+                            status = root.TryGetProperty("status", out var s) && s.ValueKind == JsonValueKind.True,
+                            message = root.TryGetProperty("message", out var m) ? m.GetString() ?? string.Empty : string.Empty,
+                            data = null
+                        };
+
+                        if (root.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object)
+                        {
+                            var dataParsed = new SaldoCreditoData
+                            {
+                                creditRequestId = TryGetInt(data, "creditRequestId") ?? 0,
+                                userId = TryGetInt(data, "userId") ?? 0,
+                                userName = TryGetString(data, "userName") ?? TryGetString(data, "usuario") ?? string.Empty,
+                                saldoDisponible = TryGetDecimal(data, "saldoDisponible") ?? 0m,
+                                status = TryGetString(data, "status") ?? string.Empty,
+                                createdAt = TryGetDateTime(data, "createdAt") ?? default
+                            };
+
+                            parsed.data = dataParsed;
+                        }
+
+                        return parsed;
+                    }
+                    catch
+                    {
+                        // Si no puede parsearse, seguimos con fallback de error.
+                    }
                 }
 
                 return new SaldoCreditoResponse
@@ -175,6 +225,71 @@ namespace Proyecto_Integradora.Services
                     message = ex.Message
                 };
             }
+        }
+
+        private static string TryGetString(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var p))
+            {
+                return null;
+            }
+
+            return p.ValueKind == JsonValueKind.String ? p.GetString() : p.ToString();
+        }
+
+        private static int? TryGetInt(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var p))
+            {
+                return null;
+            }
+
+            if (p.ValueKind == JsonValueKind.Number && p.TryGetInt32(out var i))
+            {
+                return i;
+            }
+
+            if (p.ValueKind == JsonValueKind.String && int.TryParse(p.GetString(), out var parsed))
+            {
+                return parsed;
+            }
+
+            return null;
+        }
+
+        private static decimal? TryGetDecimal(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var p))
+            {
+                return null;
+            }
+
+            if (p.ValueKind == JsonValueKind.Number)
+            {
+                return p.GetDecimal();
+            }
+
+            if (p.ValueKind == JsonValueKind.String && decimal.TryParse(p.GetString(), out var parsed))
+            {
+                return parsed;
+            }
+
+            return null;
+        }
+
+        private static DateTime? TryGetDateTime(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var p))
+            {
+                return null;
+            }
+
+            if (p.ValueKind == JsonValueKind.String && DateTime.TryParse(p.GetString(), out var dt))
+            {
+                return dt;
+            }
+
+            return null;
         }
 
         public async Task<SolicitudCreditoResponse> SolicitarCreditoAsync(SolicitudCreditoRequest solicitud)
