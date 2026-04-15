@@ -44,16 +44,16 @@ namespace Proyecto_Integradora.Views
         
         System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] tieneCredito result: {tieneCredito}");
 
-        // Si status=false y data=null → mostrar formulario para SOLICITAR crédito
+        // Si tieneCredito == true → status=false y data=null (SIN crédito, mostrar formulario de CRÉDITO)
         if (tieneCredito == true)
         {
-            System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a FormularioSolicitarValeView (sin crédito)");
-            ContentFrame.Navigate(new FormularioSolicitarValeView());
+            System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a SolicitarCreditoView (sin crédito autorizado)");
+            ContentFrame.Navigate(new SolicitarCreditoView());
             return;
         }
 
-        // Si tiene crédito → mostrar vista de CRÉDITO (es la vista inicial)
-        System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a CreditoView (tiene crédito)");
+        // Si tieneCredito == false o null → tiene crédito o error, mostrar vista de crédito
+        System.Diagnostics.Debug.WriteLine($"[ClienteInicioView] Navegando a CreditoView (tiene crédito o verificación)");
         ContentFrame.Navigate(new CreditoView());
     }
 
@@ -61,7 +61,7 @@ namespace Proyecto_Integradora.Views
     {
         // Ocultamos el panel de bienvenida
         WelcomePanel.Visibility = Visibility.Collapsed;
-        // Navegamos a solicitar crédito
+        // Navegamos a solicitar un VALE (no crédito)
         ContentFrame.Navigate(new FormularioSolicitarValeView());
     }
 

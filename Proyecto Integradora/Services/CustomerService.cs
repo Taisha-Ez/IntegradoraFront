@@ -329,6 +329,7 @@ namespace Proyecto_Integradora.Services
                 var response = await _httpClient.GetAsync($"{BaseUrl}/Creditos/saldo");
                 var raw = await response.Content.ReadAsStringAsync();
 
+                System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] HTTP Status: {response.StatusCode}");
                 System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] Raw Response: {raw}");
 
                 if (!response.IsSuccessStatusCode)
@@ -346,44 +347,44 @@ namespace Proyecto_Integradora.Services
                 using var doc = JsonDocument.Parse(raw);
                 var root = doc.RootElement;
 
-                // Obtener status
-                bool statusIsFalse = false;
+                // Obtener el valor de "status"
+                bool? status = null;
                 if (root.TryGetProperty("status", out var statusProp))
                 {
-                    statusIsFalse = statusProp.ValueKind == JsonValueKind.False;
-                    System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] status property found, is False: {statusIsFalse}");
+                    status = statusProp.GetBoolean();
+                    System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] status = {status}");
                 }
                 else
                 {
                     System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] status property NOT found");
                 }
 
-                // Obtener data
+                // Obtener el valor de "data"
                 bool dataIsNull = false;
                 if (root.TryGetProperty("data", out var dataElement))
                 {
                     dataIsNull = dataElement.ValueKind == JsonValueKind.Null;
-                    System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] data property found, is Null: {dataIsNull}, ValueKind: {dataElement.ValueKind}");
+                    System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] data is null: {dataIsNull}, ValueKind: {dataElement.ValueKind}");
                 }
                 else
                 {
                     System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] data property NOT found");
                 }
 
-                // Si status=false Y data=null → retorna true (mostrar formulario de solicitar crédito)
-                if (statusIsFalse && dataIsNull)
+                // Lógica: Si status=false Y data=null → retorna true (sin crédito, mostrar formulario)
+                if (status == false && dataIsNull)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] RESULTADO: true (Mostrar formulario de solicitar)");
+                    System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] ✓ RESULTADO: true (Mostrar formulario de solicitar crédito)");
                     return true;
                 }
 
-                // En cualquier otro caso → retorna false (ir a pagar)
-                System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] RESULTADO: false (Ir a pagar)");
+                // En cualquier otro caso → retorna false (tiene crédito o verificar)
+                System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] ✓ RESULTADO: false (Ver crédito)");
                 return false;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] Exception: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[TieneCreditoRegistradoAsync] Exception: {ex.Message}\n{ex.StackTrace}");
                 return null;
             }
         }
