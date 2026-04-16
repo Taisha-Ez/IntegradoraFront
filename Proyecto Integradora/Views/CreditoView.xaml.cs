@@ -26,5 +26,10 @@ namespace Proyecto_Integradora.Views
             InitializeComponent();
             this.DataContext = new CreditoViewModel();
         }
+
+        private void SolicitarCredito_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new SolicitarCreditoView());
+        }
     }
 }
