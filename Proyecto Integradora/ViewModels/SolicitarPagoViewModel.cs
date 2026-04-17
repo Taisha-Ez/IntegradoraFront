@@ -120,7 +120,7 @@ namespace Proyecto_Integradora.ViewModels
 
             var req = new SolicitudRequest
             {
-                montoSolicitar = (decimal)Monto,
+                montoSolicitar = decimal.Round((decimal)TotalDevolver, 2),
                 plazoPagoMeses = Plazo
             };
 
