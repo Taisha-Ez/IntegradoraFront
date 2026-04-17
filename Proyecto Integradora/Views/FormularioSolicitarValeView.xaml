@@ -14,14 +14,14 @@
             <Setter Property="BorderBrush" Value="#444"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Padding" Value="10,3"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border CornerRadius="15" Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                             <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="10,0"
+                                          Margin="10,2"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
                     </ControlTemplate>
@@ -119,12 +119,12 @@
 
                             <StackPanel Grid.Column="0">
                                 <Label Content="Parentesco" Foreground="#AAA" Margin="0,0,0,0" FontSize="12"/>
-                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefParentesco1" Height="32"/>
+                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefParentesco1" Height="34"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <Label Content="Teléfono" Foreground="#AAA" Margin="0,0,0,0" FontSize="12"/>
-                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefTel1" Height="32"/>
+                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefTel1" Height="34"/>
                             </StackPanel>
                         </Grid>
 
@@ -145,12 +145,12 @@
 
                             <StackPanel Grid.Column="0">
                                 <Label Content="Parentesco" Foreground="#AAA" Margin="0,0,0,0" FontSize="12"/>
-                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefParentesco2" Height="32"/>
+                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefParentesco2" Height="34"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <Label Content="Teléfono" Foreground="#AAA" Margin="0,0,0,0" FontSize="12"/>
-                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefTel2" Height="32"/>
+                                <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRefTel2" Height="34"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
