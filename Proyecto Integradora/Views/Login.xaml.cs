@@ -21,6 +21,9 @@ namespace Proyecto_Integradora.Views
     /// </summary>
     public partial class Login : Page
     {
+        private bool _isSyncingPassword;
+        private bool _isPasswordVisible;
+
         public Login()
         {
             InitializeComponent();
@@ -28,10 +31,60 @@ namespace Proyecto_Integradora.Views
 
         private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            if (_isSyncingPassword)
+            {
+                return;
+            }
+
+            _isSyncingPassword = true;
+            txtPasswordVisible.Text = txtPassword.Password;
+
             if (this.DataContext is LoginViewModel viewModel)
             {
-                viewModel.Contrasenia = ((PasswordBox)sender).Password;
+                viewModel.Contrasenia = txtPassword.Password;
             }
+
+            _isSyncingPassword = false;
+        }
+
+        private void txtPasswordVisible_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_isSyncingPassword || !_isPasswordVisible)
+            {
+                return;
+            }
+
+            _isSyncingPassword = true;
+            txtPassword.Password = txtPasswordVisible.Text;
+
+            if (this.DataContext is LoginViewModel viewModel)
+            {
+                viewModel.Contrasenia = txtPasswordVisible.Text;
+            }
+
+            _isSyncingPassword = false;
+        }
+
+        private void TogglePasswordVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            _isPasswordVisible = !_isPasswordVisible;
+
+            if (_isPasswordVisible)
+            {
+                txtPasswordVisible.Text = txtPassword.Password;
+                txtPassword.Visibility = Visibility.Collapsed;
+                txtPasswordVisible.Visibility = Visibility.Visible;
+                btnTogglePassword.Content = "Ocultar";
+                txtPasswordVisible.Focus();
+                txtPasswordVisible.CaretIndex = txtPasswordVisible.Text.Length;
+                return;
+            }
+
+            txtPassword.Password = txtPasswordVisible.Text;
+            txtPasswordVisible.Visibility = Visibility.Collapsed;
+            txtPassword.Visibility = Visibility.Visible;
+            btnTogglePassword.Content = "Mostrar";
+            txtPassword.Focus();
         }
     }
 }

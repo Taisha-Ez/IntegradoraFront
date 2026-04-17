@@ -68,6 +68,21 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="PasswordToggleButton" TargetType="Button">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="#CCC"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="15" Background="{TemplateBinding Background}" BorderBrush="#555" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid Background="Black">
@@ -115,10 +130,35 @@
 
                 <Label Content="Contraseña" Foreground="#AAA" FontSize="14" FontFamily="Segoe UI Semibold" Margin="0,0,0,5"/>
 
-                <PasswordBox x:Name="txtPassword"
-                             Style="{StaticResource RoundedPasswordBox}"
-                             PasswordChanged="txtPassword_PasswordChanged"
-                             Height="35" Margin="0,0,0,30"/>
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="90"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <PasswordBox x:Name="txtPassword"
+                                     Style="{StaticResource RoundedPasswordBox}"
+                                     PasswordChanged="txtPassword_PasswordChanged"
+                                     Height="35"
+                                     Visibility="Visible"/>
+
+                        <TextBox x:Name="txtPasswordVisible"
+                                 Style="{StaticResource RoundedTextBox}"
+                                 Height="35"
+                                 Visibility="Collapsed"
+                                 TextChanged="txtPasswordVisible_TextChanged"/>
+                    </Grid>
+
+                    <Button x:Name="btnTogglePassword"
+                            Grid.Column="1"
+                            Content="Mostrar"
+                            Margin="10,0,0,0"
+                            Height="35"
+                            Style="{StaticResource PasswordToggleButton}"
+                            Click="TogglePasswordVisibility_Click"
+                            Cursor="Hand"/>
+                </Grid>
 
                 <Button Content="Iniciar Sesión" 
                         Command="{Binding LoginCommand}"

@@ -64,6 +64,28 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="RoundedPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Background" Value="#1A1A1A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border CornerRadius="15"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PasswordToggleButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}"/>
     </Page.Resources>
 
     <Grid Background="Black">
@@ -135,16 +157,10 @@
 
                     <Grid Grid.Column="0">
                         <PasswordBox x:Name="txtPassword"
+                                     Style="{StaticResource RoundedPasswordBox}"
                                      PasswordChanged="txtPassword_PasswordChanged"
                                      Height="32"
                                      Visibility="Visible">
-                            <PasswordBox.Template>
-                                <ControlTemplate TargetType="PasswordBox">
-                                    <Border CornerRadius="15" Background="#1A1A1A" BorderBrush="#444" BorderThickness="1">
-                                        <ScrollViewer x:Name="PART_ContentHost" Margin="10,2"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </PasswordBox.Template>
                         </PasswordBox>
 
                         <TextBox x:Name="txtPasswordVisible"
@@ -159,7 +175,7 @@
                             Content="Mostrar"
                             Margin="10,0,0,0"
                             Height="32"
-                            Style="{StaticResource SecondaryButton}"
+                            Style="{StaticResource PasswordToggleButton}"
                             Click="TogglePasswordVisibility_Click"
                             Cursor="Hand"/>
                 </Grid>
