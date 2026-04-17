@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Proyecto_Integradora.ViewModels;
 
 namespace Proyecto_Integradora.Views
 {
@@ -25,9 +26,12 @@ namespace Proyecto_Integradora.Views
             InitializeComponent();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
-
+            if (this.DataContext is LoginViewModel viewModel)
+            {
+                viewModel.Contrasenia = ((PasswordBox)sender).Password;
+            }
         }
     }
 }

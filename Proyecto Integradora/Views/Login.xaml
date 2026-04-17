@@ -34,6 +34,26 @@
             </Setter>
         </Style>
 
+        <Style x:Key="RoundedPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Background" Value="#1A1A1A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border CornerRadius="15"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="#D32F2F"/>
             <Setter Property="Foreground" Value="White"/>
@@ -95,9 +115,10 @@
 
                 <Label Content="Contraseña" Foreground="#AAA" FontSize="14" FontFamily="Segoe UI Semibold" Margin="0,0,0,5"/>
 
-                <TextBox Style="{StaticResource RoundedTextBox}" 
-                         Text="{Binding Contrasenia, UpdateSourceTrigger=PropertyChanged}"
-                         Height="35" Margin="0,0,0,30"/>
+                <PasswordBox x:Name="txtPassword"
+                             Style="{StaticResource RoundedPasswordBox}"
+                             PasswordChanged="txtPassword_PasswordChanged"
+                             Height="35" Margin="0,0,0,30"/>
 
                 <Button Content="Iniciar Sesión" 
                         Command="{Binding LoginCommand}"
