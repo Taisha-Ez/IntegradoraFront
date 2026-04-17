@@ -127,17 +127,42 @@
                 <TextBox Style="{StaticResource RoundedTextBox}" Text="{Binding Usuario}" Height="32" Margin="0,0,0,10"/>
 
                 <Label Content="Contraseña" Foreground="#AAA" FontSize="13" FontFamily="Segoe UI Semibold" Margin="0,0,0,2" Padding="0"/>
-                <PasswordBox x:Name="txtPassword" 
-             PasswordChanged="txtPassword_PasswordChanged"
-             Height="32" Margin="0,0,0,20">
-                    <PasswordBox.Template>
-                        <ControlTemplate TargetType="PasswordBox">
-                            <Border CornerRadius="15" Background="#1A1A1A" BorderBrush="#444" BorderThickness="1">
-                                <ScrollViewer x:Name="PART_ContentHost" Margin="10,2"/>
-                            </Border>
-                        </ControlTemplate>
-                    </PasswordBox.Template>
-                </PasswordBox>
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="90"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <PasswordBox x:Name="txtPassword"
+                                     PasswordChanged="txtPassword_PasswordChanged"
+                                     Height="32"
+                                     Visibility="Visible">
+                            <PasswordBox.Template>
+                                <ControlTemplate TargetType="PasswordBox">
+                                    <Border CornerRadius="15" Background="#1A1A1A" BorderBrush="#444" BorderThickness="1">
+                                        <ScrollViewer x:Name="PART_ContentHost" Margin="10,2"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </PasswordBox.Template>
+                        </PasswordBox>
+
+                        <TextBox x:Name="txtPasswordVisible"
+                                 Style="{StaticResource RoundedTextBox}"
+                                 Height="32"
+                                 Visibility="Collapsed"
+                                 TextChanged="txtPasswordVisible_TextChanged"/>
+                    </Grid>
+
+                    <Button x:Name="btnTogglePassword"
+                            Grid.Column="1"
+                            Content="Mostrar"
+                            Margin="10,0,0,0"
+                            Height="32"
+                            Style="{StaticResource SecondaryButton}"
+                            Click="TogglePasswordVisibility_Click"
+                            Cursor="Hand"/>
+                </Grid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
