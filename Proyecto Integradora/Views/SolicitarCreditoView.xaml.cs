@@ -96,7 +96,7 @@ namespace Proyecto_Integradora.Views
             var request = new SolicitudCreditoRequest
             {
                 nombreCompleto = txtNombre.Text.Trim(),
-                curpRfc = txtRFC.Text.Trim(),
+                curpRfc = txtRFC.Text.Trim().ToUpperInvariant(),
                 direccion = txtDireccion.Text.Trim(),
                 telefono = txtTel.Text.Trim(),
                 ingresosMensuales = ingresos,

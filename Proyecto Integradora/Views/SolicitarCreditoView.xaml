@@ -80,7 +80,7 @@
                         <Label Content="Nombre Completo" Foreground="#AAA" Margin="0,0,0,2"/>
                         <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtNombre" Height="32" Margin="0,0,0,10"/>
                         <Label Content="CURP / RFC" Foreground="#AAA"/>
-                        <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRFC" Height="32"/>
+                        <TextBox Style="{StaticResource RoundedTextBox}" x:Name="txtRFC" Height="32" CharacterCasing="Upper"/>
                     </StackPanel>
 
                     <!-- Paso 2 -->
