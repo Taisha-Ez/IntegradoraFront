@@ -42,7 +42,9 @@
                           BorderBrush="#333"
                           BorderThickness="1"
                           GridLinesVisibility="None"
+                          IsReadOnly="True"
                           CanUserAddRows="False"
+                          CanUserDeleteRows="False"
                           Height="350">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridColumnHeader">
