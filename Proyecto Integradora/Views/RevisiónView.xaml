@@ -15,36 +15,6 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <Style x:Key="SearchButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#BBBBBB"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="BorderThickness" Value="0,0,0,4"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <StackPanel Orientation="Horizontal" Margin="25,10">
-                                <TextBlock Text="🔍" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="14"/>
-                                <ContentPresenter VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="White"/>
-                                <Setter Property="BorderBrush" Value="Red"/>
-                                <Setter Property="Background" Value="#15FFFFFF"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Page.Resources>
 
     <Grid Background="Black">
@@ -80,7 +50,6 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="MÓDULO DE REVISIÓN" 
@@ -102,12 +71,6 @@
                             BorderThickness="0"
                             FontWeight="Bold"/>
 
-                    <Button Grid.Column="2"
-                            Content="BUSCAR" 
-                            Style="{StaticResource SearchButtonStyle}" 
-                            Command="{Binding RecargarCommand}"
-                            HorizontalAlignment="Right"
-                            Margin="0,0,20,0"/>
                 </Grid>
             </Border>
 

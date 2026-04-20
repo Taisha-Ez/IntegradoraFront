@@ -44,30 +44,6 @@
             </Setter>
         </Style>
 
-        <Style x:Key="SearchButtonStyle" TargetType="Button" BasedOn="{StaticResource NavbarButtonStyle}">
-            <Setter Property="Foreground" Value="#FF4D4D"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <StackPanel Orientation="Horizontal" Margin="25,10">
-                                <TextBlock Text="🔍" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="14"/>
-                                <ContentPresenter VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="White"/>
-                                <Setter Property="BorderBrush" Value="Red"/>
-                                <Setter Property="Background" Value="#20FF0000"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Page.Resources>
 
     <Grid Background="Black">
@@ -105,10 +81,6 @@
                         <Button Content="RECHAZADOS" Command="{Binding VerRechazadosCommand}" Style="{StaticResource NavbarButtonStyle}"/>
                     </StackPanel>
 
-                    <Button Content="BUSCAR" 
-                            Style="{StaticResource SearchButtonStyle}" 
-                            HorizontalAlignment="Right" 
-                            Margin="0,0,20,0"/>
                 </Grid>
             </Border>
 

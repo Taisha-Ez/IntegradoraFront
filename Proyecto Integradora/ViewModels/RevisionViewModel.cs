@@ -34,11 +34,8 @@ namespace Proyecto_Integradora.ViewModels
             }
         }
 
-        public ICommand RecargarCommand { get; }
-
         public RevisionViewModel()
         {
-            RecargarCommand = new RelayCommand(async () => await CargarPendientesAsync());
             _ = CargarPendientesAsync();
         }
 
