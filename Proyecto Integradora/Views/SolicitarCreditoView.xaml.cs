@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Globalization;
+using System.Windows.Media.Animation;
 using Proyecto_Integradora.Models;
 using Proyecto_Integradora.Services;
 
@@ -76,6 +77,15 @@ namespace Proyecto_Integradora.Views
             Step2.IsEnabled = !isLoading;
             Step3.IsEnabled = !isLoading;
             Step4.IsEnabled = !isLoading;
+
+            var spinnerStoryboard = (Storyboard)FindResource("SpinnerStoryboard");
+            if (isLoading)
+            {
+                spinnerStoryboard.Begin(this, true);
+                return;
+            }
+
+            spinnerStoryboard.Stop(this);
         }
 
         private async Task EnviarSolicitudCreditoAsync()

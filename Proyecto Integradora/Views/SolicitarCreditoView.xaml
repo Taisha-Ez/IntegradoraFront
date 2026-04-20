@@ -8,6 +8,13 @@
       Title="Solicitud de Crédito Fénix" Background="Black">
 
     <Page.Resources>
+        <Storyboard x:Key="SpinnerStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="SpinnerRotateTransform"
+                             Storyboard.TargetProperty="Angle"
+                             From="0" To="360"
+                             Duration="0:0:1.1"/>
+        </Storyboard>
+
         <Style x:Key="RoundedTextBox" TargetType="TextBox">
             <Setter Property="Background" Value="#1A1A1A"/>
             <Setter Property="Foreground" Value="White"/>
@@ -183,7 +190,7 @@
         <Grid x:Name="LoadingOverlay"
               Background="#AA000000"
               Visibility="Collapsed"
-              Panel.ZIndex="10">
+              Panel.ZIndex="999">
             <Border HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Background="#151515"
@@ -193,11 +200,20 @@
                     Padding="30"
                     Width="320">
                 <StackPanel HorizontalAlignment="Center">
-                    <ProgressBar IsIndeterminate="True"
-                                 Height="8"
-                                 Margin="0,0,0,18"
-                                 Background="#2A2A2A"
-                                 Foreground="#D32F2F"/>
+                    <Grid Width="72" Height="72" Margin="0,0,0,18">
+                        <Ellipse Stroke="#3A3A3A"
+                                 StrokeThickness="6"
+                                 Fill="Transparent"/>
+                        <Ellipse Stroke="#D32F2F"
+                                 StrokeThickness="6"
+                                 StrokeDashArray="1.5 4.5"
+                                 Fill="Transparent"
+                                 RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                                <RotateTransform x:Name="SpinnerRotateTransform" Angle="0"/>
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </Grid>
                     <TextBlock Text="Enviando solicitud..."
                                Foreground="White"
                                FontSize="18"
