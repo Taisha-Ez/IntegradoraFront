@@ -15,6 +15,9 @@ namespace Proyecto_Integradora.Models
 
         [JsonPropertyName("plazo_pago_meses")]
         public int plazoPagoMeses { get; set; }
+
+        [JsonPropertyName("monto_pago_mensual")]
+        public decimal montoPagoMensual { get; set; }
     }
 
     public class PagoValeRequest

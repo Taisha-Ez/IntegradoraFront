@@ -121,7 +121,8 @@ namespace Proyecto_Integradora.ViewModels
             var req = new SolicitudRequest
             {
                 montoSolicitar = decimal.Round((decimal)TotalDevolver, 2),
-                plazoPagoMeses = Plazo
+                plazoPagoMeses = Plazo,
+                montoPagoMensual = decimal.Round((decimal)PagoMensual, 2)
             };
 
             var res = await _service.CrearSolicitudAsync(req);
