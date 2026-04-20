@@ -89,11 +89,6 @@
                  Style="{StaticResource BotonResaltadoRojo}" 
                  Click="NavegarVales_Click"/>
 
-                <RadioButton Content="INGRESOS / EGRESOS" 
-                 GroupName="MenuAdmin"
-                 Style="{StaticResource BotonResaltadoRojo}" 
-                 Click="NavegarIngresos_Click"/>
-
                 <RadioButton Content="REVISIÓN" 
                  GroupName="MenuAdmin"
                  Style="{StaticResource BotonResaltadoRojo}" 

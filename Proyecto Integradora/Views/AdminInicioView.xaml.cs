@@ -35,13 +35,6 @@ namespace Proyecto_Integradora.Views
             AdminContentFrame.Navigate(new ValesExpedidosView());
         }
 
-        private void NavegarIngresos_Click(object sender, RoutedEventArgs e)
-        {
-            DefaultContent.Visibility = Visibility.Collapsed;
-            // Asegúrate de que el nombre de la clase sea correcto
-            AdminContentFrame.Navigate(new IngresosEgresosView());
-        }
-
         private void NavegarRevision_Click(object sender, RoutedEventArgs e)
         {
             DefaultContent.Visibility = Visibility.Collapsed;
