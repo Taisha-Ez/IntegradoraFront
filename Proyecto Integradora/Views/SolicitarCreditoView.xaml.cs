@@ -67,6 +67,17 @@ namespace Proyecto_Integradora.Views
             btnBack.Visibility = (currentStep == 1) ? Visibility.Hidden : Visibility.Visible;
         }
 
+        private void SetLoading(bool isLoading)
+        {
+            LoadingOverlay.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+            btnBack.IsEnabled = !isLoading;
+            btnNext.IsEnabled = !isLoading;
+            Step1.IsEnabled = !isLoading;
+            Step2.IsEnabled = !isLoading;
+            Step3.IsEnabled = !isLoading;
+            Step4.IsEnabled = !isLoading;
+        }
+
         private async Task EnviarSolicitudCreditoAsync()
         {
             if (!decimal.TryParse(txtIngresos.Text?.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var ingresos)
@@ -91,38 +102,45 @@ namespace Proyecto_Integradora.Views
                 return;
             }
 
-            btnNext.IsEnabled = false;
+            SetLoading(true);
 
-            var request = new SolicitudCreditoRequest
+            try
             {
-                nombreCompleto = txtNombre.Text.Trim(),
-                curpRfc = txtRFC.Text.Trim().ToUpperInvariant(),
-                direccion = txtDireccion.Text.Trim(),
-                telefono = txtTel.Text.Trim(),
-                ingresosMensuales = ingresos,
-                referencias = new List<ReferenciaCreditoRequest>
+                await Task.Yield();
+
+                var request = new SolicitudCreditoRequest
                 {
-                    new ReferenciaCreditoRequest
+                    nombreCompleto = txtNombre.Text.Trim(),
+                    curpRfc = txtRFC.Text.Trim().ToUpperInvariant(),
+                    direccion = txtDireccion.Text.Trim(),
+                    telefono = txtTel.Text.Trim(),
+                    ingresosMensuales = ingresos,
+                    referencias = new List<ReferenciaCreditoRequest>
                     {
-                        parentesco = txtRefParentesco1.Text.Trim(),
-                        nombre = txtRefNombre1.Text.Trim(),
-                        numeroContacto = txtRefTel1.Text.Trim()
-                    },
-                    new ReferenciaCreditoRequest
-                    {
-                        parentesco = txtRefParentesco2.Text.Trim(),
-                        nombre = txtRefNombre2.Text.Trim(),
-                        numeroContacto = txtRefTel2.Text.Trim()
+                        new ReferenciaCreditoRequest
+                        {
+                            parentesco = txtRefParentesco1.Text.Trim(),
+                            nombre = txtRefNombre1.Text.Trim(),
+                            numeroContacto = txtRefTel1.Text.Trim()
+                        },
+                        new ReferenciaCreditoRequest
+                        {
+                            parentesco = txtRefParentesco2.Text.Trim(),
+                            nombre = txtRefNombre2.Text.Trim(),
+                            numeroContacto = txtRefTel2.Text.Trim()
+                        }
                     }
-                }
-            };
+                };
 
-            var response = await _customerService.SolicitarCreditoAsync(request);
-            MessageBox.Show(response.message, response.status ? "Exito" : "Error",
-                MessageBoxButton.OK,
-                response.status ? MessageBoxImage.Information : MessageBoxImage.Error);
-
-            btnNext.IsEnabled = true;
+                var response = await _customerService.SolicitarCreditoAsync(request);
+                MessageBox.Show(response.message, response.status ? "Exito" : "Error",
+                    MessageBoxButton.OK,
+                    response.status ? MessageBoxImage.Information : MessageBoxImage.Error);
+            }
+            finally
+            {
+                SetLoading(false);
+            }
         }
     }
 }

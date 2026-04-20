@@ -179,5 +179,38 @@
                 </Grid>
             </StackPanel>
         </Grid>
+
+        <Grid x:Name="LoadingOverlay"
+              Background="#AA000000"
+              Visibility="Collapsed"
+              Panel.ZIndex="10">
+            <Border HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="#151515"
+                    BorderBrush="#D32F2F"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="30"
+                    Width="320">
+                <StackPanel HorizontalAlignment="Center">
+                    <ProgressBar IsIndeterminate="True"
+                                 Height="8"
+                                 Margin="0,0,0,18"
+                                 Background="#2A2A2A"
+                                 Foreground="#D32F2F"/>
+                    <TextBlock Text="Enviando solicitud..."
+                               Foreground="White"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="Por favor espera mientras la API procesa tu información."
+                               Foreground="#AAAAAA"
+                               FontSize="12"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>
