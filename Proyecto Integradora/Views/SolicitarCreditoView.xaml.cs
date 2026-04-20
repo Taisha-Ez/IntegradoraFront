@@ -113,6 +113,7 @@ namespace Proyecto_Integradora.Views
             }
 
             SetLoading(true);
+            var solicitudEnviadaCorrectamente = false;
 
             try
             {
@@ -143,6 +144,7 @@ namespace Proyecto_Integradora.Views
                 };
 
                 var response = await _customerService.SolicitarCreditoAsync(request);
+                solicitudEnviadaCorrectamente = response.status;
                 MessageBox.Show(response.message, response.status ? "Exito" : "Error",
                     MessageBoxButton.OK,
                     response.status ? MessageBoxImage.Information : MessageBoxImage.Error);
@@ -150,6 +152,11 @@ namespace Proyecto_Integradora.Views
             finally
             {
                 SetLoading(false);
+            }
+
+            if (solicitudEnviadaCorrectamente)
+            {
+                NavigationService?.Navigate(new CreditoView());
             }
         }
     }
