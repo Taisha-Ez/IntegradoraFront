@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Globalization;
@@ -14,6 +15,64 @@ namespace Proyecto_Integradora.Views
 {
     public partial class SolicitarCreditoView : Page
     {
+        private bool ValidarPaso1()
+        {
+            // Convertimos a mayúsculas y quitamos espacios al inicio/final
+            string rfcCurp = txtRFC.Text.Trim().ToUpper();
+
+            // Expresión para CURP (18 caracteres, formato oficial mexicano)
+            string regexCurp = @"^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$";
+
+            // Expresión para RFC (12 caracteres para Moral, 13 para Física)
+            string regexRfc = @"^[A-Z&Ñ]{3,4}\d{6}[A-Z0-9]{3}$";
+
+            if (string.IsNullOrWhiteSpace(rfcCurp))
+            {
+                MessageBox.Show("El campo CURP/RFC no puede estar vacío.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            bool esCurpValido = Regex.IsMatch(rfcCurp, regexCurp);
+            bool esRfcValido = Regex.IsMatch(rfcCurp, regexRfc);
+
+            if (!esCurpValido && !esRfcValido)
+            {
+                MessageBox.Show("El formato del CURP o RFC no es válido. Revísalo por favor.", "Dato Incorrecto", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true; // Si llega aquí, todo está correcto
+        }
+
+        private bool ValidarPaso2()
+        {
+            string telefono = txtTel.Text.Trim();
+
+            // Expresión para teléfono de Torreón: Empieza con 871 y le siguen 7 números (10 en total)
+            string regexTelTorreon = @"^871\d{7}$";
+
+            if (string.IsNullOrWhiteSpace(telefono))
+            {
+                MessageBox.Show("El campo de teléfono no puede estar vacío.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (!Regex.IsMatch(telefono, regexTelTorreon))
+            {
+                MessageBox.Show("El número debe ser de Torreón, Coahuila (iniciar con 871 y tener 10 dígitos en total).", "Teléfono Inválido", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            // Aquí también podrías validar que la dirección no esté vacía
+            if (string.IsNullOrWhiteSpace(txtDireccion.Text))
+            {
+                MessageBox.Show("Por favor, ingresa tu dirección.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
         private int currentStep = 1;
         private readonly CustomerService _customerService = new CustomerService();
 
@@ -24,6 +83,17 @@ namespace Proyecto_Integradora.Views
 
         private async void BtnNext_Click(object sender, RoutedEventArgs e)
         {
+            // --- VALIDACIONES ANTES DE AVANZAR ---
+            if (currentStep == 1)
+            {
+                if (!ValidarPaso1()) return; // Detiene el avance si falla el RFC/CURP
+            }
+            else if (currentStep == 2)
+            {
+                if (!ValidarPaso2()) return; // Detiene el avance si no es 871
+            }
+
+            // --- LÓGICA DE NAVEGACIÓN ---
             if (currentStep < 4)
             {
                 currentStep++;
@@ -31,6 +101,7 @@ namespace Proyecto_Integradora.Views
             }
             else
             {
+                // IMPORTANTE: Asegúrate de que el nombre coincida con tu método Task
                 await EnviarSolicitudCreditoAsync();
             }
         }
