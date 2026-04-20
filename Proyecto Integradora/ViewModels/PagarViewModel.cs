@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -14,7 +15,11 @@ namespace Proyecto_Integradora.ViewModels
         private readonly CustomerService _service = new CustomerService();
         private ObservableCollection<Vale> _misVales;
         private Vale _valeSeleccionado;
-        private string _montoPago = "0.01";
+        private string _montoPago = "0.00";
+        private ObservableCollection<int> _mesesDisponibles = new ObservableCollection<int>();
+        private int _mesesAPagar = 1;
+        private decimal _pagoMensualEstimado;
+        private decimal _montoPagoCalculado;
 
         public ObservableCollection<Vale> MisVales
         {
@@ -33,11 +38,38 @@ namespace Proyecto_Integradora.ViewModels
             {
                 _valeSeleccionado = value;
                 OnPropertyChanged(nameof(ValeSeleccionado));
+                ConfigurarPagoParaVale();
+            }
+        }
 
-                if (_valeSeleccionado != null && _valeSeleccionado.montoRestante > 0)
-                {
-                    MontoPago = _valeSeleccionado.montoRestante.ToString("0.00", CultureInfo.InvariantCulture);
-                }
+        public ObservableCollection<int> MesesDisponibles
+        {
+            get => _mesesDisponibles;
+            set
+            {
+                _mesesDisponibles = value;
+                OnPropertyChanged(nameof(MesesDisponibles));
+            }
+        }
+
+        public int MesesAPagar
+        {
+            get => _mesesAPagar;
+            set
+            {
+                _mesesAPagar = value;
+                OnPropertyChanged(nameof(MesesAPagar));
+                RecalcularMontoPago();
+            }
+        }
+
+        public decimal PagoMensualEstimado
+        {
+            get => _pagoMensualEstimado;
+            set
+            {
+                _pagoMensualEstimado = value;
+                OnPropertyChanged(nameof(PagoMensualEstimado));
             }
         }
 
@@ -82,6 +114,62 @@ namespace Proyecto_Integradora.ViewModels
             ValeSeleccionado = MisVales[0];
         }
 
+        private void ConfigurarPagoParaVale()
+        {
+            if (ValeSeleccionado == null)
+            {
+                MesesDisponibles = new ObservableCollection<int>();
+                MesesAPagar = 1;
+                PagoMensualEstimado = 0m;
+                _montoPagoCalculado = 0m;
+                MontoPago = "0.00";
+                return;
+            }
+
+            PagoMensualEstimado = ValeSeleccionado.plazoPagoMeses > 0
+                ? decimal.Round(ValeSeleccionado.montoSolicitado / ValeSeleccionado.plazoPagoMeses, 2)
+                : 0m;
+
+            var maxMeses = 1;
+            if (PagoMensualEstimado > 0)
+            {
+                maxMeses = (int)System.Math.Ceiling((double)(ValeSeleccionado.montoRestante / PagoMensualEstimado));
+                if (maxMeses < 1)
+                {
+                    maxMeses = 1;
+                }
+            }
+
+            MesesDisponibles = new ObservableCollection<int>(Enumerable.Range(1, maxMeses));
+            MesesAPagar = MesesDisponibles.FirstOrDefault();
+        }
+
+        private void RecalcularMontoPago()
+        {
+            if (ValeSeleccionado == null)
+            {
+                _montoPagoCalculado = 0m;
+                MontoPago = "0.00";
+                return;
+            }
+
+            if (PagoMensualEstimado <= 0)
+            {
+                _montoPagoCalculado = decimal.Round(ValeSeleccionado.montoRestante, 2);
+                MontoPago = _montoPagoCalculado.ToString("0.00", CultureInfo.InvariantCulture);
+                return;
+            }
+
+            var monto = decimal.Round(PagoMensualEstimado * MesesAPagar, 2);
+            if (monto > ValeSeleccionado.montoRestante)
+            {
+                monto = decimal.Round(ValeSeleccionado.montoRestante, 2);
+            }
+
+            _montoPagoCalculado = monto;
+            MontoPago = _montoPagoCalculado.ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
         private async Task PagarValeSeleccionado()
         {
             if (ValeSeleccionado == null)
@@ -90,13 +178,13 @@ namespace Proyecto_Integradora.ViewModels
                 return;
             }
 
-            if (!decimal.TryParse(MontoPago, NumberStyles.Number, CultureInfo.InvariantCulture, out var monto) || monto <= 0)
+            if (_montoPagoCalculado <= 0)
             {
-                MessageBox.Show("Ingresa un monto de pago valido mayor a 0.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Selecciona una cantidad de meses valida para pagar.", "Validacion", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var res = await _service.PagarValeAsync(ValeSeleccionado.id, monto);
+            var res = await _service.PagarValeAsync(ValeSeleccionado.id, _montoPagoCalculado);
             MessageBox.Show(res.message, res.status ? "Exito" : "Error", MessageBoxButton.OK,
                 res.status ? MessageBoxImage.Information : MessageBoxImage.Error);
 
